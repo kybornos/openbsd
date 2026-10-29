@@ -1,0 +1,41 @@
+#!/bin/ksh
+
+daemon_rtable="1"
+daemon_class="kybr"
+daemon="/usr/local/kybornos/bin/kybr.sh"
+daemon_execdir="/usr/local/kybornos/current/"
+daemon_flags="foreground"
+daemon_user="_kybr"
+daemon_logger="daemon.info"
+daemon_timeout=30
+
+. /etc/rc.d/rc.subr
+
+set -a
+. /etc/kybornos.conf
+set +a
+
+rc_bg=YES
+rc_reload=NO
+
+rc_pre() {
+    rc_exec "/usr/local/kybornos/current/erts-*/bin/epmd -daemon -address ${epmd_address}"
+}
+
+rc_post() {
+    rc_exec "/usr/local/kybornos/current/erts-*/bin/epmd -kill"
+}
+
+rc_start() {
+        rc_exec "${daemon} ${daemon_flags}"
+}
+
+rc_check() {
+        rc_exec "${daemon} ping" >/dev/null 2>&1
+}
+
+rc_stop() {
+        rc_exec "${daemon} stop"
+}
+
+rc_cmd $1

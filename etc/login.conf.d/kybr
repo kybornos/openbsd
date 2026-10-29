@@ -1,0 +1,5 @@
+kybr:\
+    :auth=reject:\
+    :rtable=1:\
+    :openfiles=8192:\
+    :tc=daemon:
